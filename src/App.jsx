@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { useState } from "react";
+import SearchBar from "./components/SearchBar";
+import WeatherCard from "./components/WeatherCard";
 
 function App() {
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState(null);
+
+  const handleSearch = () => {
+    if (!city.trim()) return; // ignore empty
+
+    const mockData = {
+      name: city,
+      sys: { country: "US" },
+      main: { temp: 22, feels_like: 20, humidity: 60 },
+      weather: [{ main: "Clear", description: "clear sky" }],
+    };
+    setWeather(mockData);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center px-4">
-      <div className="bg-white bg-opacity-80 backdrop-blur-md p-6 rounded-2xl shadow-lg max-w-sm w-full">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">Weather App</h1>
-
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Enter city name"
-            className="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-
-        <div className="text-center">
-          <p className="text-lg font-medium text-gray-700">🌤️ 26°C</p>
-          <p className="text-sm text-gray-600">Cloudy - Dhaka</p>
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-br from-pink-500 via-red-500 to-yellow-400 p-8 max-w-md mx-auto">
+      <h1 className="text-white text-4xl font-extrabold mb-2">Weather App</h1>
+      <p className="text-white mb-6 text-center opacity-80">
+        Get the latest weather info for any city — just start typing and press
+        Enter!
+      </p>
+      <SearchBar city={city} setCity={setCity} onSearch={handleSearch} />
+      <WeatherCard weather={weather} />
+      <div className="mt-8 text-white text-sm opacity-80">
+        <p>Tip: Try searching for cities like London, New York, or Tokyo.</p>
       </div>
+      <footer className="text-white text-xs mt-12 opacity-50">
+        Powered by OpenWeather API
+      </footer>
     </div>
   );
 }
