@@ -6,16 +6,22 @@ function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
 
-  const handleSearch = () => {
-    if (!city.trim()) return; // ignore empty
+  const handleSearch = async () => {
+    if (!city.trim()) return;
 
-    const mockData = {
-      name: city,
-      sys: { country: "US" },
-      main: { temp: 22, feels_like: 20, humidity: 60 },
-      weather: [{ main: "Clear", description: "clear sky" }],
-    };
-    setWeather(mockData);
+    const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("City not found");
+      const data = await response.json();
+      setWeather(data);
+    } catch (error) {
+      console.error("Error fetching weather:", error);
+      setWeather(null);
+      alert("Could not fetch weather. Please try another city.");
+    }
   };
 
   return (
@@ -31,7 +37,7 @@ function App() {
         <p>Tip: Try searching for cities like London, New York, or Tokyo.</p>
       </div>
       <footer className="text-white text-xs mt-12 opacity-50">
-        Powered by OpenWeather API
+        © 2025 Salma Jahan. All rights reserved.
       </footer>
     </div>
   );
